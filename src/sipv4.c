@@ -36,6 +36,8 @@ bool socketv4_init(const char *device)
         close(sock);
         return false;
     }
+
+    return true;
 }
 
 void socketv4_clear()
