@@ -91,9 +91,6 @@ void sniff_loop()
                 perror("select()");
             }
             break;
-        } else
-        if (selected == 0) {
-            printf(".");
         }
 
         if (FD_ISSET(socket_v4.sock, &fd_mask)) {
@@ -102,6 +99,7 @@ void sniff_loop()
                 perror("recv()");
             } else {
                 //printf("s:%d:", size);
+                //fflush(stdout);
                 // TODO: parse packet
                 // parse_packet(buf, size);
             }

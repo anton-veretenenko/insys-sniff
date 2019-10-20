@@ -13,7 +13,7 @@ bool socketv4_init(const char *device)
         return false;
     }
 
-    sock = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_IP));
+    sock = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
     if (sock == -1) {
         perror("socket()");
         return false;
@@ -22,7 +22,7 @@ bool socketv4_init(const char *device)
     
     sockaddr.sll_family = AF_PACKET;
     sockaddr.sll_ifindex = idx;
-    sockaddr.sll_protocol = htons(ETH_P_IP);
+    sockaddr.sll_protocol = htons(ETH_P_ALL);
     if (bind(sock, (struct sockaddr *) &sockaddr, sizeof(sockaddr)) == -1) {
         perror("bind()");
         close(sock);
