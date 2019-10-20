@@ -32,7 +32,7 @@ void sniff_loop()
 
 void print_usage()
 {
-    printf("\nUsage: insys-sniff -d eth0 [-f t:127.0.0.1:80,u:0.0.0.0:53]\n");
+    printf("\nUsage: insys-sniff -d eth0 [-f t,127.0.0.1,80 -f u,0.0.0.0,53]\n");
 }
 
 bool read_config(int argc, char *argv[])
@@ -44,8 +44,12 @@ bool read_config(int argc, char *argv[])
     while ((opt = getopt(argc, argv, options)) != -1) {
         switch (opt) {
             case 'd':
-                strcpy(net_device, optarg);
-                device_set = true;
+                if (!device_set) {
+                    strcpy(net_device, optarg);
+                    device_set = true;
+                } else {
+                    printf("No multiple interfaces allowed, using first one.\n");
+                }
                 break;
             case 'f':
                 filters_init_from_args(optarg);
