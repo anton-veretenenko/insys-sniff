@@ -1,11 +1,5 @@
 #include "filter.h"
 
-bool filters_init(int argc, char *argv[])
-{
-    filters.count = 0;
-    printf("filters_init\n");
-}
-
 void filters_clear()
 {
     if (filters.count > 0) {
@@ -34,4 +28,10 @@ bool filter_add(enum FilterIpType type, enum FilterProtoType proto_type,
         filters.filters = filters_p;
         filters.count++;
     }
+}
+
+bool filters_init_from_args(const char *optarg)
+{
+    filters.count = 0;
+    printf("filters_init_from_args\n");
 }

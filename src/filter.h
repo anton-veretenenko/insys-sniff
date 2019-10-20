@@ -30,7 +30,7 @@ struct Filters_t {
 } filters;
 
 // init filters from command line and/or config file
-bool filters_init(int argc, char *argv[]);
+bool filters_init_from_args(const char *optarg);
 void filters_clear();
 bool filter_add(enum FilterIpType type, enum FilterProtoType proto_type,
                 uint32_t ip4, uint8_t ip6[16], uint16_t port);
