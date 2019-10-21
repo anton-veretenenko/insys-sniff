@@ -20,6 +20,7 @@ bool socketv4_init(const char *device)
     }
     socket_v4.sock = sock;
     
+    memset(&sockaddr, 0, sizeof(sockaddr));
     sockaddr.sll_family = AF_PACKET;
     sockaddr.sll_ifindex = idx;
     sockaddr.sll_protocol = htons(ETH_P_ALL);
@@ -29,6 +30,7 @@ bool socketv4_init(const char *device)
         return false;
     }
 
+    memset(&mreq, 0, sizeof(mreq));
     mreq.mr_ifindex = idx;
     mreq.mr_type = PACKET_MR_PROMISC;
     if (setsockopt(sock, SOL_PACKET, PACKET_ADD_MEMBERSHIP, &mreq, sizeof(mreq)) != 0) {
