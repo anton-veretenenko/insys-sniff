@@ -76,6 +76,7 @@ bool filter_pass_v4(const packet_v4 *packet)
 bool filter_parse_from_args(char *optarg)
 {
     char *substr = strtok(optarg, ",");
+    uint8_t proto = 0;
     if (substr != NULL) {
         Filter filter;
         memset(&filter, 0, sizeof(filter));
@@ -86,8 +87,10 @@ bool filter_parse_from_args(char *optarg)
         if (strcasecmp(substr, "u") == 0) {
             filter.protocol = IPPROTO_UDP;
         } else
-        {
-            printf("\n wrong type\n");
+        if ((proto = atoi(substr)) != 0) {
+            filter.protocol = proto;
+        } else {
+            printf("\n wrong protocol\n");
             return false;
         }
         
@@ -140,6 +143,7 @@ bool filter_parse_json_object(char *json)
     bool proto_set = false;
     bool ip_set = false;
     bool port_set = false;
+    uint8_t proto = 0;
 
     for (int i = 1; i < r; i++) {
         json[t[i].end] = 0;
@@ -151,6 +155,9 @@ bool filter_parse_json_object(char *json)
             } else
             if (strcasecmp(json + t[i].start, "udp") == 0) {
                 filter.protocol = IPPROTO_UDP;
+            } else
+            if ((proto = atoi(json + t[i].start)) != 0) {
+                filter.protocol = proto;
             } else {
                 printf("Config: filter protocol parse error\n");
                 return false;
