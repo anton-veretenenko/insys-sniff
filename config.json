@@ -3,6 +3,7 @@
 	"filters": [
 		{"protocol": 1, "ip": "0.0.0.0", "port": 0},
 		{"protocol": "tcp", "ip": "0.0.0.0", "port": "80"},
-		{"protocol": "udp", "ip": "0.0.0.0", "port": "53"}
+		{"protocol": "udp", "ip": "0.0.0.0", "port": "53"},
+		{"protocol": 58, "ip": "2a00:1450:400f:808::200e", "port": 0}
 	]
 }
