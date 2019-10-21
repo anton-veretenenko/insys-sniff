@@ -126,7 +126,6 @@ bool filter_parse_from_args(char *optarg)
 
 bool filter_parse_json_object(char *json)
 {
-    printf("Parsing filter object\n%s\n", json);
     jsmn_parser p;
     jsmntok_t t[8];
     jsmn_init(&p);
@@ -182,11 +181,6 @@ bool filter_parse_json_object(char *json)
         }
     }
 
-    for (int i = 0; i < sizeof(Filter); i++) {
-        printf("%02X ", ((uint8_t *)&filter)[i]);
-    }
-    printf("\n");
-
     if (proto_set && ip_set && port_set) {
         filter_add(filter.type, filter.protocol, filter.ip4, filter.ip6, filter.port);
         return true;
@@ -197,6 +191,8 @@ bool filter_parse_json_object(char *json)
 
 bool filters_parse_from_file(const char *filename, char *device)
 {
+    printf("Reading config from file.\n");
+
     FILE *f = fopen(filename, "r");
     if (f == NULL) {
         perror("fopen()");
@@ -238,16 +234,13 @@ bool filters_parse_from_file(const char *filename, char *device)
     }
 
     for (int i = 1; i < r; i++) {
-        printf("JSON type %d %d %d\n", t[i].type, t[i].start, t[i].end);
         if (t[i].type == JSMN_STRING) {
             buffer[t[i].end] = 0; // terminate string for ease of use
-            printf("String: %s\n", buffer + t[i].start);
             if (strcasecmp(buffer + t[i].start, "device") == 0) {
                 // device setting
                 i++;
                 buffer[t[i].end] = 0;
                 strcpy(device, buffer + t[i].start);
-                printf("Device: %s\n", device);
             } else
             if (strcasecmp(buffer + t[i].start, "filters") == 0) {
                 // filters array detected
