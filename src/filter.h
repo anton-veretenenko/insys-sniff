@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
+#include "parser.h"
 
 #define MAX_FILTERS 16
 
@@ -34,5 +35,6 @@ bool filters_init_from_args(const char *optarg);
 void filters_clear();
 bool filter_add(enum FilterIpType type, enum FilterProtoType proto_type,
                 uint32_t ip4, uint8_t ip6[16], uint16_t port);
+bool filter_pass(const packet_v4 *packet);
 
 #endif

@@ -35,3 +35,12 @@ bool filters_init_from_args(const char *optarg)
     filters.count = 0;
     printf("filters_init_from_args\n");
 }
+
+bool filter_pass(const packet_v4 *packet)
+{
+    if (packet->protocol == IPPROTO_TCP) {
+        return true; // placeholder
+    }
+
+    return true;
+}
