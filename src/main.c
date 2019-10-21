@@ -63,9 +63,13 @@ bool read_config(int argc, char *argv[])
 
     // TODO: read from config file
 
-    if (!device_set || help_called) {
-        print_usage();
-        return false;
+    if (!device_set) {
+        // try to parse config file
+        if (!filters_parse_from_file("config.json", net_device)) {
+            printf("Config file parse failed\n");
+            print_usage();
+            return false;
+        }
     }
 
      return true;
