@@ -1,0 +1,7 @@
+{
+	"device": "wlp3s0",
+	"filters": [
+		{"protocol": "tcp", "ip": "0.0.0.0", "port": "80"},
+		{"protocol": "udp", "ip": "0.0.0.0", "port": "43"}
+	]
+}

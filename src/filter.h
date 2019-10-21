@@ -34,5 +34,7 @@ bool filter_add(enum FilterIpType type, uint8_t protocol,
                 uint32_t ip4, uint8_t ip6[16], uint16_t port);
 bool filter_pass_v4(const packet_v4 *packet);
 bool filter_parse_from_args(char *optarg);
+bool filter_parse_json_object(char *json);
+bool filters_parse_from_file(const char *filename, char *device);
 
 #endif
