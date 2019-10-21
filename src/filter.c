@@ -64,6 +64,31 @@ bool filter_pass_v46(const packet_v46 *packet)
             }
             // filter passed, no need to check others
             return true;
+        } else
+        if (filter->type == ipv6 &&
+            packet->protocol == filter->protocol) {
+            uint8_t ipv6_empty[16]; // create empty ipv6 address
+            memset(ipv6_empty, 0, sizeof(ipv6_empty));
+
+            if (memcmp(ipv6_empty, filter->ip6, sizeof(ipv6_empty)) != 0) {
+                // check ip also
+                if (memcmp(packet->ip_from_6, filter->ip6, sizeof(ipv6_empty)) != 0 &&
+                    memcmp(packet->ip_to_6, filter->ip6, sizeof(ipv6_empty)) != 0) {
+                        // source and dest ip did not match
+                        // TODO: only source ip match needed
+                        continue;
+                }
+            }
+            if (filter->port != 0) {
+                // check port also
+                if (packet->port_from != filter->port &&
+                    packet->port_to != filter->port) {
+                        // port did not match source or dest
+                        continue;
+                }
+            }
+            // filter passed, no need to check others
+            return true;
         } else {
             // protocol did not match
             continue;
