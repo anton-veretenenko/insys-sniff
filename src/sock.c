@@ -1,9 +1,9 @@
-#include "sipv4.h"
+#include "sock.h"
 
-bool socketv4_init(const char *device)
+bool socket_init(const char *device)
 {
     int sock;
-    socket_v4.sock = 0;
+    socket_v46.sock = 0;
     struct sockaddr_ll sockaddr;
     struct packet_mreq mreq;
 
@@ -18,7 +18,7 @@ bool socketv4_init(const char *device)
         perror("socket()");
         return false;
     }
-    socket_v4.sock = sock;
+    socket_v46.sock = sock;
     
     memset(&sockaddr, 0, sizeof(sockaddr));
     sockaddr.sll_family = AF_PACKET;
@@ -42,18 +42,18 @@ bool socketv4_init(const char *device)
     return true;
 }
 
-void socketv4_clear()
+void socket_clear()
 {
-    if (socket_v4.sock != 0) {
-        close(socket_v4.sock);
+    if (socket_v46.sock != 0) {
+        close(socket_v46.sock);
     }
 }
 
-int socketv4_read(uint8_t *buf, uint16_t size)
+int socket_read(uint8_t *buf, uint16_t size)
 {
-    if (socket_v4.sock == 0) {
+    if (socket_v46.sock == 0) {
         return -1;
     }
 
-    return recv(socket_v4.sock, buf, size, 0);
+    return recv(socket_v46.sock, buf, size, 0);
 }

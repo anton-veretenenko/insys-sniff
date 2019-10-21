@@ -35,7 +35,7 @@ bool filter_add(enum FilterIpType type, uint8_t protocol,
     return false;
 }
 
-bool filter_pass_v4(const packet_v4 *packet)
+bool filter_pass_v46(const packet_v46 *packet)
 {
     if (filters.count == 0) {
         return true;

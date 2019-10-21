@@ -1,5 +1,5 @@
-#ifndef SIPV4_H
-#define SIPV4_H
+#ifndef SOCK_H
+#define SOCK_H
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -15,13 +15,13 @@
 #include <net/ethernet.h>
 #include <net/if.h>
 
-struct socket_v4_t {
+struct socket_v46_t {
     int sock;
-} socket_v4;
+} socket_v46;
 
-bool socketv4_init(const char *device);
-void socketv4_clear();
-int socketv4_read(uint8_t *buf, uint16_t size);
+bool socket_init(const char *device);
+void socket_clear();
+int socket_read(uint8_t *buf, uint16_t size);
 
 
 #endif

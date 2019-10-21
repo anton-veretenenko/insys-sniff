@@ -9,7 +9,7 @@
 #include <sys/select.h>
 #include <sys/time.h>
 #include "filter.h"
-#include "sipv4.h"
+#include "sock.h"
 #include "parser.h"
 
 static int int_signal = 0;
@@ -76,7 +76,7 @@ bool read_config(int argc, char *argv[])
 
 }
 
-void print_packet_line(packet_v4 *packet)
+void print_packet_line(packet_v46 *packet)
 {
     struct in_addr from, to;
     from.s_addr = packet->ip_from;
@@ -111,10 +111,10 @@ void sniff_loop()
         }
 
         FD_ZERO(&fd_mask);
-        FD_SET(socket_v4.sock, &fd_mask);
+        FD_SET(socket_v46.sock, &fd_mask);
         timeout.tv_usec = 0;
         timeout.tv_sec = 3;
-        selected = select(socket_v4.sock+1, &fd_mask, NULL, NULL, &timeout);
+        selected = select(socket_v46.sock+1, &fd_mask, NULL, NULL, &timeout);
         if (selected == -1) {
             if (!int_signal) {
                 perror("select()");
@@ -122,16 +122,16 @@ void sniff_loop()
             break;
         }
 
-        if (FD_ISSET(socket_v4.sock, &fd_mask)) {
-            int size = socketv4_read(buf, 2048);
+        if (FD_ISSET(socket_v46.sock, &fd_mask)) {
+            int size = socket_read(buf, 2048);
             if (size < 0) {
                 perror("recv()");
                 return;
             } else {
-                packet_v4 packet;
-                if (parser_parse_v4(buf, &packet)) {
+                packet_v46 packet;
+                if (parser_parse_v46(buf, &packet)) {
                     // parsed, expecting good data in packet struct
-                    if (filter_pass_v4(&packet)) {
+                    if (filter_pass_v46(&packet)) {
                         // packet passed filters
                         // print it out
                         print_packet_line(&packet);
@@ -150,13 +150,13 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    if (!socketv4_init(net_device)) {
+    if (!socket_init(net_device)) {
         return -1;
     }
 
     sniff_loop();
 
-    socketv4_clear();
+    socket_clear();
 
     return 0;
 }
