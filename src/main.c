@@ -10,6 +10,7 @@
 #include <sys/time.h>
 #include "filter.h"
 #include "sipv4.h"
+#include "parser.h"
 
 static int int_signal = 0;
 static char net_device[IF_NAMESIZE];
@@ -68,6 +69,27 @@ bool read_config(int argc, char *argv[])
 
 }
 
+void print_packet_line(packet_v4 *packet)
+{
+    struct in_addr from, to;
+    from.s_addr = packet->ip_from;
+    to.s_addr = packet->ip_to;
+    char from_a[16], to_a[16];
+
+    strcpy(from_a, inet_ntoa(from));
+    strcpy(to_a, inet_ntoa(to));
+
+    float size = packet->size / 1024;
+    printf("%s:%d\t %s:%d\t %d\t %.2fkb\n",
+        from_a,
+        packet->port_from,
+        to_a,
+        packet->port_to,
+        packet->protocol,
+        size
+    );
+}
+
 void sniff_loop()
 {
     uint8_t *buf = malloc(2048);
@@ -97,11 +119,17 @@ void sniff_loop()
             int size = socketv4_read(buf, 2048);
             if (size < 0) {
                 perror("recv()");
+                return;
             } else {
-                //printf("s:%d:", size);
-                //fflush(stdout);
-                // TODO: parse packet
-                // parse_packet(buf, size);
+                packet_v4 packet;
+                if (parser_parse_v4(buf, &packet)) {
+                    // parsed, expecting good data in packet struct
+                    if (filter_pass(&packet)) {
+                        // packet passed filters
+                        // print it out
+                        print_packet_line(&packet);
+                    }
+                } //else printf("packet failed to parse\n");
             }
         }
     }
