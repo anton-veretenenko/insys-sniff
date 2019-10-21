@@ -81,20 +81,38 @@ void print_packet_line(packet_v46 *packet)
     struct in_addr from, to;
     from.s_addr = packet->ip_from;
     to.s_addr = packet->ip_to;
-    char from_a[16], to_a[16];
+    char from_a[INET_ADDRSTRLEN], to_a[INET_ADDRSTRLEN];
+    char from_a6[INET6_ADDRSTRLEN], to_a6[INET6_ADDRSTRLEN];
 
-    strcpy(from_a, inet_ntoa(from));
-    strcpy(to_a, inet_ntoa(to));
+    if (packet->is_ipv6 != 1) {
+        // ipv4 print
+        strcpy(from_a, inet_ntoa(from));
+        strcpy(to_a, inet_ntoa(to));
 
-    float size = packet->size / 1024;
-    printf("%s:%d\t %s:%d\t %d\t %d b\n",
-        from_a,
-        packet->port_from,
-        to_a,
-        packet->port_to,
-        packet->protocol,
-        packet->size
-    );
+        //float size = packet->size / 1024;
+        printf("%s:%d\t %s:%d\t %d\t %d b\n",
+            from_a,
+            packet->port_from,
+            to_a,
+            packet->port_to,
+            packet->protocol,
+            packet->size
+        );
+    } else {
+        // ipv6 print
+        inet_ntop(AF_INET6, packet->ip_from_6, from_a6, sizeof(from_a6));
+        inet_ntop(AF_INET6, packet->ip_to_6, to_a6, sizeof(to_a6));
+
+        //float size = packet->size / 1024;
+        printf("%s:%d\t %s:%d\t %d\t %d b\n",
+            from_a6,
+            packet->port_from,
+            to_a6,
+            packet->port_to,
+            packet->protocol,
+            packet->size
+        );
+    }
 }
 
 void sniff_loop()
