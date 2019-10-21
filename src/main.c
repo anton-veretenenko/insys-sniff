@@ -83,13 +83,13 @@ void print_packet_line(packet_v4 *packet)
     strcpy(to_a, inet_ntoa(to));
 
     float size = packet->size / 1024;
-    printf("%s:%d\t %s:%d\t %d\t %.2fkb\n",
+    printf("%s:%d\t %s:%d\t %d\t %d b\n",
         from_a,
         packet->port_from,
         to_a,
         packet->port_to,
         packet->protocol,
-        size
+        packet->size
     );
 }
 
