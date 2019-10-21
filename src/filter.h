@@ -6,6 +6,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
+#include <strings.h>
+#include <ctype.h>
 #include "parser.h"
 
 #define MAX_FILTERS 16
@@ -13,13 +15,10 @@
 enum FilterIpType {
     ipv4, ipv6
 };
-enum FilterProtoType {
-    tcp, udp
-};
 
 typedef struct Filter_t {
     enum FilterIpType type;
-    enum FilterProtoType proto_type;
+    uint8_t protocol;
     uint32_t ip4;
     uint8_t ip6[16];
     uint16_t port;
@@ -30,11 +29,10 @@ struct Filters_t {
     uint8_t count;
 } filters;
 
-// init filters from command line and/or config file
-bool filters_init_from_args(const char *optarg);
 void filters_clear();
-bool filter_add(enum FilterIpType type, enum FilterProtoType proto_type,
+bool filter_add(enum FilterIpType type, uint8_t protocol,
                 uint32_t ip4, uint8_t ip6[16], uint16_t port);
-bool filter_pass(const packet_v4 *packet);
+bool filter_pass_v4(const packet_v4 *packet);
+bool filter_parse_from_args(char *optarg);
 
 #endif

@@ -34,7 +34,8 @@ bool read_config(int argc, char *argv[])
     bool device_set = false;
     bool filters_set = false;
     bool help_called = false;
-
+    filters_clear();
+    
     while ((opt = getopt(argc, argv, options)) != -1) {
         switch (opt) {
             case 'd':
@@ -46,8 +47,10 @@ bool read_config(int argc, char *argv[])
                 }
                 break;
             case 'f':
-                filters_init_from_args(optarg);
-                filters_set = true;
+                printf("Filter %s\n", optarg);
+                if (filter_parse_from_args(optarg)) {
+                    filters_set = true;
+                }
                 break;
             case 'h':
             case '?':
@@ -124,7 +127,7 @@ void sniff_loop()
                 packet_v4 packet;
                 if (parser_parse_v4(buf, &packet)) {
                     // parsed, expecting good data in packet struct
-                    if (filter_pass(&packet)) {
+                    if (filter_pass_v4(&packet)) {
                         // packet passed filters
                         // print it out
                         print_packet_line(&packet);
